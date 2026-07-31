@@ -1,0 +1,19 @@
+CBT SEKOLAH — MULAI DI SINI
+
+VERSI INI TIDAK MEMILIKI AKUN DEMO.
+
+1. Buat project Supabase baru.
+2. Jalankan seluruh isi database.sql di Supabase SQL Editor.
+3. Masukkan Project URL dan Publishable/anon key ke config.js.
+4. Unggah isi folder ini ke root repository GitHub.
+5. Aktifkan GitHub Pages dari branch main dan folder /(root).
+6. Buka link aplikasi.
+7. Isi wizard untuk membuat sekolah dan administrator pertama.
+8. Tambahkan siswa, buat ujian, lalu uji dari HP lain.
+
+Jika database lama masih berisi akun demo dan belum ada data penting:
+- Jalankan RESET-DATABASE.sql
+- Lalu jalankan database.sql
+
+JANGAN masukkan service_role key, secret key, atau password database ke GitHub.
+Panduan lengkap: README.md
