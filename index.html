@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#165DFF" />
+  <meta name="description" content="Aplikasi CBT SMP dengan database terpusat untuk guru dan siswa." />
+  <title>CBT SMP</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <noscript>Aplikasi ini membutuhkan JavaScript.</noscript>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <header id="appHeader" class="app-header hidden">
+    <div>
+      <div class="brand-row">
+        <img src="icons/icon-192.png" alt="" class="brand-icon" />
+        <div>
+          <strong>CBT SMP</strong>
+          <small id="headerSubtitle">Ujian berbasis web</small>
+        </div>
+      </div>
+    </div>
+    <button id="logoutBtn" class="btn btn-ghost btn-small">Keluar</button>
+  </header>
+
+  <main id="app" class="app-shell"></main>
+
+  <template id="loginTemplate">
+    <section class="auth-page">
+      <div class="auth-card card">
+        <div class="hero-mark">CBT</div>
+        <h1>CBT SMP</h1>
+        <p class="muted">Masuk sebagai guru atau siswa.</p>
+        <form id="loginForm" class="stack">
+          <label>
+            Nama pengguna
+            <input id="loginUsername" autocomplete="username" required placeholder="Contoh: siswa01" />
+          </label>
+          <label>
+            Kata sandi
+            <div class="password-wrap">
+              <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Kata sandi" />
+              <button id="togglePassword" type="button" class="icon-button" aria-label="Tampilkan kata sandi">👁</button>
+            </div>
+          </label>
+          <button class="btn btn-primary btn-block" type="submit">Masuk</button>
+        </form>
+        <details class="demo-box">
+          <summary>Akun demo</summary>
+          <div class="demo-grid">
+            <button type="button" class="demo-login" data-user="guru" data-pass="guru123">
+              <strong>Guru</strong><span>guru / guru123</span>
+            </button>
+            <button type="button" class="demo-login" data-user="siswa01" data-pass="smp123">
+              <strong>Siswa</strong><span>siswa01 / smp123</span>
+            </button>
+          </div>
+        </details>
+        <p class="tiny muted center">Data tersimpan terpusat di database sekolah.</p>
+      </div>
+    </section>
+  </template>
+
+  <template id="teacherTemplate">
+    <section class="dashboard">
+      <div class="welcome-card card accent-card">
+        <div>
+          <p class="eyebrow">Dashboard Guru</p>
+          <h1 id="teacherGreeting">Selamat datang</h1>
+          <p>Kelola ujian, siswa, dan hasil dari satu halaman.</p>
+        </div>
+        <button id="newExamQuickBtn" class="btn btn-light">+ Buat ujian</button>
+      </div>
+
+      <div id="teacherStats" class="stats-grid"></div>
+
+      <nav class="tabs" aria-label="Menu guru">
+        <button class="tab active" data-tab="exams">Ujian</button>
+        <button class="tab" data-tab="students">Siswa</button>
+        <button class="tab" data-tab="results">Hasil</button>
+        <button class="tab" data-tab="backup">Data</button>
+      </nav>
+
+      <section id="teacherTabContent"></section>
+    </section>
+  </template>
+
+  <template id="studentTemplate">
+    <section class="dashboard">
+      <div class="welcome-card card accent-card">
+        <div>
+          <p class="eyebrow">Dashboard Siswa</p>
+          <h1 id="studentGreeting">Halo</h1>
+          <p>Pilih ujian yang tersedia dan kerjakan dengan teliti.</p>
+        </div>
+      </div>
+      <div id="studentStats" class="stats-grid"></div>
+      <section class="section-block">
+        <div class="section-heading">
+          <div><p class="eyebrow">Ujian aktif</p><h2>Daftar Ujian</h2></div>
+        </div>
+        <div id="availableExamList" class="card-grid"></div>
+      </section>
+      <section class="section-block">
+        <div class="section-heading">
+          <div><p class="eyebrow">Riwayat</p><h2>Nilai Saya</h2></div>
+        </div>
+        <div id="studentResultList"></div>
+      </section>
+    </section>
+  </template>
+
+  <template id="examTemplate">
+    <section class="exam-page">
+      <div class="exam-topbar card">
+        <div>
+          <p class="eyebrow" id="examSubject"></p>
+          <h1 id="examTitle"></h1>
+          <p class="muted" id="examStudent"></p>
+        </div>
+        <div class="timer-box" aria-live="polite">
+          <span>Sisa waktu</span>
+          <strong id="examTimer">00:00</strong>
+        </div>
+      </div>
+
+      <div class="exam-layout">
+        <aside class="question-nav card">
+          <div class="nav-title">
+            <strong>Nomor soal</strong>
+            <small><span id="answeredCount">0</span>/<span id="totalCount">0</span> terjawab</small>
+          </div>
+          <div id="questionNumbers" class="number-grid"></div>
+          <div class="legend tiny">
+            <span><i class="dot answered"></i>Terjawab</span>
+            <span><i class="dot current"></i>Saat ini</span>
+          </div>
+        </aside>
+
+        <section class="question-card card">
+          <div class="question-meta">
+            <span id="questionPosition" class="badge"></span>
+            <button id="flagQuestionBtn" class="btn btn-ghost btn-small" type="button">☆ Tandai</button>
+          </div>
+          <h2 id="questionText" class="question-text"></h2>
+          <div id="optionList" class="option-list"></div>
+          <div class="exam-actions">
+            <button id="prevQuestionBtn" class="btn btn-secondary" type="button">← Sebelumnya</button>
+            <button id="nextQuestionBtn" class="btn btn-primary" type="button">Berikutnya →</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="submit-bar card">
+        <div>
+          <strong>Selesai mengerjakan?</strong>
+          <p class="muted tiny">Periksa kembali jawaban sebelum mengumpulkan.</p>
+        </div>
+        <button id="submitExamBtn" class="btn btn-danger">Kumpulkan ujian</button>
+      </div>
+    </section>
+  </template>
+
+  <dialog id="modal" class="modal">
+    <div class="modal-card" id="modalCard">
+      <button id="modalCloseBtn" type="button" class="modal-close" aria-label="Tutup">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

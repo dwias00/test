@@ -1,0 +1,12 @@
+CBT SMP CENTRAL — MULAI DI SINI
+
+1. Buat project di Supabase.
+2. Jalankan seluruh isi database.sql melalui Supabase SQL Editor.
+3. Salin Project URL dan Publishable key ke config.js.
+4. Unggah seluruh folder ini ke GitHub Pages/hosting HTTPS.
+5. Login demo:
+   Guru   : guru / guru123
+   Siswa  : siswa01 / smp123
+
+Panduan lengkap tersedia di README.md.
+JANGAN masukkan secret key atau service_role key ke config.js.
